@@ -8,9 +8,26 @@ import { UpdateAlertDto } from './dto/update-alert.dto';
 export class AlertService {
     constructor(private prisma: PrismaService) {}
 
-    async findAlerts(): Promise<Alert[]> {
-        return await this.prisma.alert.findMany();
-    }
+    async findAlerts(query?: string, page: number = 1, limit: number = 10): Promise<Alert[]> {
+        const skip = (page - 1) * limit;
+    
+        if (query) {
+          return await this.prisma.alert.findMany({
+            where: {
+              OR: [
+                { title: { contains: query, mode: 'insensitive' } },
+              ],
+            },
+            skip: Number(skip),
+            take: Number(limit),
+          });
+        }
+    
+        return await this.prisma.alert.findMany({
+            skip: Number(skip),
+            take: Number(limit),
+        });
+      }
 
     async findAlertById(id: number): Promise<Alert> {
         const alert = await this.prisma.alert.findUnique({

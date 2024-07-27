@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { EmergencyContactService } from './emergency-contact.service';
 import { CreateEmergencyContactDto } from './dto/create-emergency-contact.dto';
@@ -19,8 +20,12 @@ export class EmergencyContactController {
   constructor(private emergencyContactService: EmergencyContactService) {}
 
   @Get()
-  async getEmergencyContacts() {
-    return await this.emergencyContactService.findEmergencyContacts();
+  async getEmergencyContacts(
+    @Query('q') query?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.emergencyContactService.findEmergencyContacts(query, page, limit);
   }
 
   @Get(':id')

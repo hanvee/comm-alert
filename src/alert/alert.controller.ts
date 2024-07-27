@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Alert } from '@prisma/client';
 import { AlertService } from './alert.service';
@@ -19,8 +20,12 @@ export class AlertController {
   constructor(private alertService: AlertService) {}
 
   @Get()
-  async getAlerts(): Promise<Alert[]> {
-    return this.alertService.findAlerts();
+  async getAlerts(
+    @Query('q') query?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<Alert[]> {
+    return this.alertService.findAlerts(query, page, limit);
   }
 
   @Get(':id')
