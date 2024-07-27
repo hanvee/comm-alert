@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EmergencyContact } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateEmergencyContactDto } from './dto/create-emergency-contact.dto';
@@ -13,11 +13,17 @@ export class EmergencyContactService {
     }
 
     async findEmergencyContactById(id: number): Promise<EmergencyContact> {
-        return await this.prisma.emergencyContact.findUnique({
+        const emergencyContact = await this.prisma.emergencyContact.findUnique({
             where: {
                 id: Number(id)
             },
         });
+
+        if (!emergencyContact) {
+            throw new NotFoundException('emergency contact not found');
+        }
+
+        return emergencyContact;
     }
 
     async insertEmergencyContact(data: CreateEmergencyContactDto): Promise<EmergencyContact> {
