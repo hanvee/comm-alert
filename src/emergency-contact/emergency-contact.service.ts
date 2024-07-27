@@ -75,14 +75,4 @@ export class EmergencyContactService {
       },
     });
   }
-
-  async searchEmergencyContacts(query: string): Promise<EmergencyContact[]> {
-    return await this.prisma.emergencyContact.findMany({
-      where: {
-        name: {
-          contains: query,
-        },
-      },
-    });
-  }
 }
